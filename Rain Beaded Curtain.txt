@@ -2,8 +2,8 @@ import random
 
 # -----------------------------
 # CONFIGURATION
-# Purpose is to configure a beaded curtain to appear random as if rain. Planned beads are 9mm. Window where this will be hung is 10 feet by 10 feet.
-# Determine strand gap first (how many strings total = how many columns are needed), then strand length (the longest strand determines how many rows there are), then go thru each strand and determine bead placement. 
+# Purpose is to configure a beaded curtain to appear random as if rain. Planned beads are 9mm. The window where this will be hung is 10 feet by 10 feet.
+# Determine strand gap first (how many strings total = how many columns are needed), then strand length (the longest strand determines how many rows there are), then go through each strand and determine bead placement. 
 # -----------------------------
 
 SEED = None
@@ -11,14 +11,14 @@ SEED = None
 WINDOW_WIDTH = 120.0
 WINDOW_HEIGHT = 120.0
 
-BEAD_SIZE_INCH = 9 / 25.4
+BEAD_SIZE_INCH = 9 / 25.4 #beads are 9mm in size
 
-STRAND_GAP_INCH = (0.75, 3.00)
+STRAND_GAP_INCH = (0.75, 3.00) #curtain rack hooks are 0.63 inches, therefore the gap has to be bigger than that.
 BEAD_GAP_INCH = (0.00, 6.00)
-STRAND_LEN_INCH = (2.00, 100.00)
+STRAND_LEN_INCH = (2.00, 100.00) #curtain cannot exceed 120 inches including the nail board and mounting hardware
 
-TYPE_ROLL = (1, 5)
-COLOR_ROLL = (1, 16)
+TYPE_ROLL = (1, 5) #20% chance of a color bead; all other beads are prisms
+COLOR_ROLL = (1, 16) #16 total color options
 COLOR_MAP = { 
     1: 'A', 2: 'B', 3: 'C', 4: 'D', 5: 'E', 6: 'F', 7: 'G', 8: 'H', 9: 'I', 10: 'J', 11: 'K', 12: 'L', 13: 'M', 14: 'N', 15: 'O', 16: 'P'}
 
