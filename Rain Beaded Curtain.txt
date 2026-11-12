@@ -1,0 +1,184 @@
+import random
+
+# -----------------------------
+# CONFIGURATION
+# Purpose is to configure a beaded curtain to appear random as if rain. Planned beads are 9mm. Window where this will be hung is 10 feet by 10 feet.
+# Determine strand gap first (how many strings total = how many columns are needed), then strand length (the longest strand determines how many rows there are), then go thru each strand and determine bead placement. 
+# -----------------------------
+
+SEED = None
+
+WINDOW_WIDTH = 120.0
+WINDOW_HEIGHT = 120.0
+
+BEAD_SIZE_INCH = 9 / 25.4
+
+STRAND_GAP_INCH = (0.75, 3.00)
+BEAD_GAP_INCH = (0.00, 6.00)
+STRAND_LEN_INCH = (2.00, 100.00)
+
+TYPE_ROLL = (1, 5)
+COLOR_ROLL = (1, 16)
+COLOR_MAP = { 
+    1: 'A', 2: 'B', 3: 'C', 4: 'D', 5: 'E', 6: 'F', 7: 'G', 8: 'H', 9: 'I', 10: 'J', 11: 'K', 12: 'L', 13: 'M', 14: 'N', 15: 'O', 16: 'P'}
+
+# Visual resolution: inches per array row
+ROW_HEIGHT_INCH = 0.5
+
+if SEED is None:
+	SEED = random.randint(1, 999999)
+
+random.seed(SEED)
+print("Seed: ", SEED)
+
+
+# -----------------------------
+# STAGE 1: STRAND PLACEMENT
+# -----------------------------
+
+def create_strands():
+    strands = []
+    x = 0.0
+
+    while x < WINDOW_WIDTH:
+        strands.append({
+            "x": x,
+            "length": None,
+            "beads": []
+        })
+
+        x += random.uniform(*STRAND_GAP_INCH)
+
+    return strands
+
+
+# -----------------------------
+# STAGE 2: STRAND LENGTHS
+# -----------------------------
+
+def assign_lengths(strands):
+    longest_strand = 0.0
+
+    for strand in strands:
+        strand["length"] = random.uniform(*STRAND_LEN_INCH)
+
+        if strand["length"] > longest_strand:
+            longest_strand = strand["length"]
+
+    return strands, longest_strand
+
+# -----------------------------
+# STAGE 3: BEAD PLACEMENT
+# -----------------------------
+
+def assign_beads(strands):
+    for strand in strands:
+        position = 0.0
+
+        while position + BEAD_SIZE_INCH <= strand["length"]:
+
+            bead_type = random.randint(*TYPE_ROLL)
+
+            if bead_type == 5:
+                symbol = COLOR_MAP[random.randint(*COLOR_ROLL)]
+            else:
+                symbol = "*"
+
+            strand["beads"].append({
+                "position": position,
+                "symbol": symbol
+            })
+
+            position += (
+                BEAD_SIZE_INCH +
+                random.uniform(*BEAD_GAP_INCH)
+            )
+
+    return strands
+
+
+# -----------------------------
+# STAGE 4: CREATE VISUAL ARRAY
+# -----------------------------
+
+def create_array(strands, longest_strand):
+
+    rows = int(longest_strand / ROW_HEIGHT_INCH) + 1
+    columns = len(strands)
+
+    pattern = [
+        [[] for _ in range(columns)]
+        for _ in range(rows)
+    ]
+
+    for col, strand in enumerate(strands):
+
+        for bead in strand["beads"]:
+
+            row = int(
+                bead["position"] / ROW_HEIGHT_INCH
+            )
+
+            if row < rows:
+                pattern[row][col].append(bead["symbol"])
+
+    return pattern
+
+
+# -----------------------------
+# STAGE 5: PRINT ARRAY
+# -----------------------------
+
+def print_array(pattern):
+    bead_counts = {}
+
+    # Count how many of each bead is used
+    for row in pattern:
+        for cell in row:
+            for bead in cell:
+                bead_counts[bead] = bead_counts.get(bead, 0) + 1
+
+    # Print bead summary
+    print("Bead Summary:")
+    for bead, count in sorted(bead_counts.items()):
+        print(f"{bead}: {count}")
+    print(f"Total Beads: {sum(bead_counts.values())}")
+
+    print("\nArray:")
+
+    # Print the array
+    for row in pattern:
+        cells = []
+        for cell in row:
+            if len(cell) == 0:
+                cells.append(".")
+            elif len(cell) == 1:
+                cells.append(cell[0])
+            else:
+                cells.append("/")
+
+        print(" ".join(cells))
+
+
+# -----------------------------
+# MAIN
+# -----------------------------
+def main():
+
+    strands = create_strands()
+
+    strands, longest_strand = assign_lengths(strands)
+
+    assign_beads(strands)
+
+    pattern = create_array(strands, longest_strand)
+
+    print("Total strands:", len(strands))
+    print("Longest strand:", round(longest_strand, 2), "inches")
+    print("Total rows:", len(pattern))
+    print()
+
+    print_array(pattern)
+    
+if __name__ == "__main__":
+    main()
